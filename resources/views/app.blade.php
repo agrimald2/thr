@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
@@ -19,9 +19,16 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
+        
     </head>
     <body class="font-sans antialiased">
-        @inertia
 
+    <script type="text/javascript" src="https://js.openpay.pe/openpay.v1.min.js"></script>
+    <script type='text/javascript' src="https://js.openpay.pe/openpay-data.v1.min.js"></script>
+
+    <script src="https://js.culqi.com/checkout-js"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+
+        @inertia
     </body>
 </html>

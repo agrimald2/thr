@@ -2,6 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Table from './Table.vue';
 import { ref } from 'vue';
+import axios from 'axios';
 
 const showFilters = ref(false);
 
@@ -108,10 +109,41 @@ function toggleFilters() {
                         </div>
                     </div>
                 </div>
+                <button
+                    class="my-2 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="button" @click="$inertia.visit('/dashboard/payments/create')">
+                    Nuevo
+                </button>
                 <div class="mt-2 p-4 bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <Table />
+                    <Table :payments="payments" />
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
+
+<script>
+export default {
+    props: {
+        // Define the props if any are passed to this component
+    },
+    data() {
+        return {
+            payments: []
+        };
+    },
+    methods: {
+        async getPayments() {
+            try {
+                const response = await axios.get('/api/payments');
+                this.payments = response.data;
+            } catch (error) {
+                console.error('Error fetching payments:', error);
+            }
+        }
+    },
+    created() {
+        this.getPayments();
+    }
+};
+</script>

@@ -4,11 +4,166 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Payment;
+use App\Models\Account;
+use App\Models\Currency;
+use Illuminate\Support\Str;
+
+use Log;
 
 class PaymentsController extends Controller
 {
     public function index()
     {
         return Inertia::render('Payments/Index');
+    }
+
+    public function getPayments(){
+        $payments = Payment::with('account')->get();
+        return response()->json($payments);
+    }
+
+    public function create(){
+        $accounts = Account::all();
+        $currencies = Currency::all();
+        return Inertia::render('Payments/Create', ['accounts' => $accounts, 'currencies' => $currencies]);
+    }
+
+    public function store(Request $request)
+    {
+        Log::info($request);
+
+        $validatedData = $request->validate([
+            'amount_usd' => 'required|numeric',
+            'currency' => 'required|string',
+            'description' => 'nullable|string',
+            'billed' => 'sometimes|boolean',
+            'redirect_link' => 'nullable|url',
+            'created_by' => 'nullable|string',
+        ]);
+
+        // Get a random account if account_id is not provided
+        if (!$request->filled('account_id')) {
+            $account = $this->getRandomAccount();
+            $validatedData['account_id'] = $account->id;
+            $validatedData['payment_gateway'] = $account->payment_gateway;
+        } else {
+            $validatedData['account_id'] = $request->input('account_id');
+            $account = Account::find($validatedData['account_id']);
+            $validatedData['payment_gateway'] = $account->payment_gateway;
+        }
+
+        // Calculate the amount in the specified currency if it is not USD
+        $currency = Currency::where('abbreviation', $validatedData['currency'])->first();
+        if ($currency && $validatedData['currency'] !== 'USD') {
+            $validatedData['amount'] = $validatedData['amount_usd'] * $currency->tc;
+        } else {
+            $validatedData['amount'] = $validatedData['amount_usd'];
+        }
+
+        // Remove payment_date from the validated data as it should not be stored
+        unset($validatedData['payment_date']);
+
+        $payment = new Payment($validatedData);
+        $payment->save();
+
+        // Include id in the reference code and update the payment
+        $payment->reference_code = $request->input('reference_code', $this->getReferenceCode($payment->id));
+        $payment->save();
+
+        return response()->json(['message' => 'Payment created successfully', 'payment' => $payment], 201);
+    }
+
+    public function getRandomAccount()
+    {
+        return Account::where('is_active', true)->inRandomOrder()->first();
+    }
+
+    public function getReferenceCode($paymentId)
+    {
+        return 'RC-' . strtoupper(Str::random(10)) . '-' . $paymentId;
+    }
+
+    public function paymentLink($reference_code){
+        $payment = Payment::where('reference_code', $reference_code)->firstOrFail();
+
+        if (!$payment) {
+            return response()->json(['message' => 'Payment not found'], 404);
+        }
+
+        if ($payment->status === 'paid') {
+            return Inertia::render('Pay/Payed', ['payment' => $payment]);
+        }
+
+        $account = $payment->account()->firstOrFail();
+        $paymentGateway = $account->payment_gateway;
+
+        switch ($paymentGateway) {
+            case 'OP':
+                return $this->renderOpenPayPaymentView($account->id, $payment);
+            case 'MP':
+                return $this->renderMercadoPagoPaymentView($account->id, $payment);
+            case 'DLGO':
+                return $this->renderDLocalGOPaymentView($account->id, $payment);
+            case 'CQ':
+                return $this->renderCulquiPaymentView($account->id, $payment);
+            default:
+                return response()->json(['message' => 'Payment gateway not supported'], 400);
+        }
+    }
+
+    public function renderOpenPayPaymentView($account_id, $payment){
+        $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
+        $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
+        $merchantId = env($merchantIdKey);
+        $publicKey = env($publicKeyKey);
+
+        if (!$merchantId || !$publicKey) {
+            return response()->json(['message' => 'OpenPay credentials not found'], 500);
+        }
+
+        return Inertia::render('Pay/Openpay', [
+            'merchantId' => $merchantId,
+            'publicKey' => $publicKey,
+            'payment' => $payment   
+        ]);
+    }
+
+    public function renderMercadoPagoPaymentView($account_id, $payment){
+        $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
+        $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
+        $merchantId = env($merchantIdKey);
+        $publicKey = env($publicKeyKey);
+
+        return Inertia::render('Pay/MercadoPago', [
+            'merchantId' => $merchantId,
+            'publicKey' => $publicKey,
+            'payment' => $payment   
+        ]);
+    }
+
+    public function renderDLocalGOPaymentView(){
+        
+    }
+
+    public function renderCulquiPaymentView($account_id, $payment){
+        $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
+        $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
+        $merchantId = env($merchantIdKey);
+        $publicKey = env($publicKeyKey);
+
+        return Inertia::render('Pay/Culqui', [
+            'merchantId' => $merchantId,
+            'publicKey' => $publicKey,
+            'payment' => $payment   
+        ]);
+    }
+
+    public function markAsPaid($payment_id){
+        $payment = Payment::findOrFail($payment_id);
+        $payment->update([
+            'payment_date' => now(),
+            'status' => 'paid'
+        ]);
     }
 }

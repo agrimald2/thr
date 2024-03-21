@@ -35,4 +35,7 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/dashboard/payments', [PaymentsController::class, 'index']);
+    Route::get('/dashboard/payments/create', [PaymentsController::class, 'create']);
 });
+
+Route::get('/payment_link/{reference_code}', [PaymentsController::class, 'paymentLink']);
