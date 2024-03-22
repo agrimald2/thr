@@ -72,7 +72,7 @@ const toggleDropdown = (key) => {
                                 <div class="flex center">
                                     <i class="fa-solid fa-gauge ml-2"></i>
                                     <span
-                                        class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">System</span>
+                                        class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">Xplatt</span>
                                 </div>
                             </a>
                         </div>
