@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Models\Payment;
 use App\Models\Account;
 use App\Models\Currency;
+use App\Models\Payment;
+use Culqi\Culqi;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use Inertia\Inertia;
 use Log;
 
 class PaymentsController extends Controller
@@ -18,12 +18,14 @@ class PaymentsController extends Controller
         return Inertia::render('Payments/Index');
     }
 
-    public function getPayments(){
+    public function getPayments()
+    {
         $payments = Payment::with('account')->get();
         return response()->json($payments);
     }
 
-    public function create(){
+    public function create()
+    {
         $accounts = Account::all();
         $currencies = Currency::all();
         return Inertia::render('Payments/Create', ['accounts' => $accounts, 'currencies' => $currencies]);
@@ -84,7 +86,8 @@ class PaymentsController extends Controller
         return 'RC-' . strtoupper(Str::random(10)) . '-' . $paymentId;
     }
 
-    public function paymentLink($reference_code){
+    public function paymentLink($reference_code)
+    {
         $payment = Payment::where('reference_code', $reference_code)->firstOrFail();
 
         if (!$payment) {
@@ -112,7 +115,8 @@ class PaymentsController extends Controller
         }
     }
 
-    public function renderOpenPayPaymentView($account_id, $payment){
+    public function renderOpenPayPaymentView($account_id, $payment)
+    {
         $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
         $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
         $merchantId = env($merchantIdKey);
@@ -125,11 +129,12 @@ class PaymentsController extends Controller
         return Inertia::render('Pay/Openpay', [
             'merchantId' => $merchantId,
             'publicKey' => $publicKey,
-            'payment' => $payment   
+            'payment' => $payment,
         ]);
     }
 
-    public function renderMercadoPagoPaymentView($account_id, $payment){
+    public function renderMercadoPagoPaymentView($account_id, $payment)
+    {
         $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
         $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
         $merchantId = env($merchantIdKey);
@@ -138,32 +143,75 @@ class PaymentsController extends Controller
         return Inertia::render('Pay/MercadoPago', [
             'merchantId' => $merchantId,
             'publicKey' => $publicKey,
-            'payment' => $payment   
+            'payment' => $payment,
         ]);
     }
 
-    public function renderDLocalGOPaymentView(){
-        
+    public function renderDLocalGOPaymentView()
+    {
+
     }
 
-    public function renderCulquiPaymentView($account_id, $payment){
-        $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
-        $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
-        $merchantId = env($merchantIdKey);
+    public function renderCulquiPaymentView($account_id, $payment)
+    {
+        $publicKeyKey = $account_id . '_CQ_PUBLIC_KEY';
         $publicKey = env($publicKeyKey);
 
-        return Inertia::render('Pay/Culqui', [
-            'merchantId' => $merchantId,
+        $amount = $payment->amount * 100;
+
+        return Inertia::render('Pay/Culqi2', [
             'publicKey' => $publicKey,
-            'payment' => $payment   
+            'payment' => $payment,
+            'amount' => $amount,
         ]);
     }
 
-    public function markAsPaid($payment_id){
+    public function processPaymentCulqi(Request $request)
+    {
+
+        $payment = Payment::where('reference_code', $request->orderId)->first();
+        $amount = $payment->amount * 100;
+
+        $privateKey = env($payment->account_id . '_CQ_SECRET_KEY');
+
+        try {
+            $token = $request->input('token');
+
+            // Configurar las credenciales de Culqi (clave secreta)
+            $culqi = new Culqi([
+                'api_key' => $privateKey,
+            ]);
+
+
+            $charge = $culqi->Charges->create(
+                array(
+                    'amount' => $amount,
+                    'currency_code' => $payment->currency,
+                    'description' => 'Pago demo',
+                    'email' => 'usuario@example.com',
+                    'source_id' => $request->input('token'),
+                )
+            );
+
+           if ($charge->outcome->type === 'venta_exitosa') {
+            $this->markAsPaid($payment->id);
+                return response()->json(['success' => true, 'message' => 'Pago exitoso']);
+            } else {
+                // El pago no fue exitoso, puedes manejar esta situación según tus necesidades
+                return response()->json(['success' => false, 'message' => 'El pago no fue exitoso']);
+            }
+        } catch (\Culqi\Exception\InapplicableObject $e) {
+            // Hubo un error al procesar el pago
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+    }
+
+    public function markAsPaid($payment_id)
+    {
         $payment = Payment::findOrFail($payment_id);
         $payment->update([
             'payment_date' => now(),
-            'status' => 'paid'
+            'status' => 'paid',
         ]);
     }
 }
