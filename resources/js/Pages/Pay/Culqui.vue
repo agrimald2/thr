@@ -168,7 +168,7 @@
                         </div>
                     </div>
                 </main> -->
-
+                
                 <footer class="mt-2 p-4">
                     <div class="flex justify-center center mb-2" v-if="loader">
                         <Loader />

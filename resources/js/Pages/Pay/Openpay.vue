@@ -162,7 +162,7 @@ export default {
             card: 'front',
             openpay: {
                 token: '',
-                endpoint_sandbox_openpay: "https://sandbox-api.openpay.pe/v1/",
+                endpoint_sandbox_openpay: "https://api.openpay.pe/v1/", 
                 endpoint_payment: "/api/pay/openpay",
                 deviceSessionId: '',
                 openpay_id: this.merchantId,
