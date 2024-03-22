@@ -9,6 +9,7 @@
                 <p class="text-gray-600 text-sm">
                     {{ payment.reference_code }} | {{ payment.description }}
                 </p>
+                <p>{{ merchantId }}</p>
             </div>
             <div class="credit-card w-full sm:w-auto shadow-lg mx-auto rounded-xl bg-white">
                 <header class="flex flex-col justify-center items-center">
