@@ -51,7 +51,7 @@ function toggleFilters() {
                             type="button">
                             Más filtros
                         </button>
-                        <button @click="exportToCSV"
+                        <button
                             class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                             type="button">
                             <i class="fas fa-file-excel"></i> Exportar Excel
@@ -140,32 +140,6 @@ export default {
             } catch (error) {
                 console.error('Error fetching payments:', error);
             }
-        },
-        exportToCSV() {
-            const csvRows = [];
-            // Add header
-            const headers = Object.keys(this.payments[0]);
-            csvRows.push(headers.join(','));
-
-            // Add rows
-            for (const payment of this.payments) {
-                const values = headers.map(header => {
-                    const escaped = ('' + payment[header]).replace(/"/g, '\\"');
-                    return `"${escaped}"`;
-                });
-                csvRows.push(values.join(','));
-            }
-
-            const csvString = csvRows.join('\n');
-            const blob = new Blob([csvString], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('hidden', '');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'payments.csv');
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
     },
     created() {
