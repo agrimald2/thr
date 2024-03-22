@@ -119,11 +119,13 @@ class PaymentsController extends Controller
     {
         $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
         $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
+        
         $merchantId = env($merchantIdKey);
         $publicKey = env($publicKeyKey);
 
         Log::info("MERCHANT");
         Log::info($merchantId);
+        Log::info($publicKey);
 
         if (!$merchantId || !$publicKey) {
             return response()->json(['message' => 'OpenPay credentials not found'], 500);
