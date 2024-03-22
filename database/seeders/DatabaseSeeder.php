@@ -33,6 +33,9 @@ class DatabaseSeeder extends Seeder
         \App\Models\PaymentGateway::insert([
             ['name' => 'OPENPAY', 'abbreviation' => 'OP'],
             ['name' => 'MERCADOPAGO', 'abbreviation' => 'MP'],
+            ['name' => 'CULQUI', 'abbreviation' => 'CQ'],
+            ['name' => 'DLOCALGO', 'abbreviation' => 'DLOCALG'],
+            ['name' => 'PAYU', 'abbreviation' => 'PY'],
         ]);
     
         \App\Models\Currency::insert([
