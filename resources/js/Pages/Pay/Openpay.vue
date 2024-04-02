@@ -9,7 +9,7 @@
                 <p class="text-gray-600 text-sm">
                     {{ payment.reference_code }} | {{ payment.description }}
                 </p>
-                <p>{{ merchantId }}</p>
+                <p> {{ publicKey }}</p>
             </div>
             <div class="credit-card w-full sm:w-auto shadow-lg mx-auto rounded-xl bg-white">
                 <header class="flex flex-col justify-center items-center">
@@ -163,20 +163,22 @@ export default {
             card: 'front',
             openpay: {
                 token: '',
-                endpoint_sandbox_openpay: "https://api.openpay.pe/v1/", 
+                endpoint_sandbox_openpay: import.meta.env.VITE_OP_SANDBOX_ENDPOINT,
                 endpoint_payment: "/api/pay/openpay",
                 deviceSessionId: '',
+                openpay_sandbox_mode: import.meta.env.VITE_OP_SANDBOX_MODE,
                 openpay_id: this.merchantId,
                 openpay_key: this.publicKey,
-                openpay_sandbox_mode: true,
             }
         };
     },
     mounted() {
-        OpenPay.setId(this.merchantId);
-        OpenPay.setApiKey(this.publicKey);
-        OpenPay.setSandboxMode(true);
+        console.log(this.openpay);
+        OpenPay.setId(this.openpay.openpay_id);
+        OpenPay.setApiKey(this.openpay.openpay_key);
+        OpenPay.setSandboxMode(this.openpay.openpay_sandbox_mode);
         this.openpay.deviceSessionId = OpenPay.deviceData.setup();
+        console.log("All good");
     },
     computed: {
         isValid() {

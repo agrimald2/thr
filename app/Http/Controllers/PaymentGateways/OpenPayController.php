@@ -30,7 +30,7 @@ class OpenPayController extends Controller
             $public_key = $request->account_id . '_OP_PUBLIC_KEY';
             $openpay = Openpay::getInstance(env($merchant_id_key), env($secret_key), 'PE');
             
-            Openpay::setProductionMode(true);
+            Openpay::setProductionMode(env('VITE_OP_PRODUCTION_MODE'));
             
             // create object customer
             $customer = array(

@@ -110,6 +110,10 @@ class PaymentsController extends Controller
                 return $this->renderDLocalGOPaymentView($account->id, $payment);
             case 'CQ':
                 return $this->renderCulquiPaymentView($account->id, $payment);
+            case 'PU':
+                    return $this->renderCulquiPaymentView($account->id, $payment);
+            case 'RB':
+                return $this->renderRebillPaymentView($account->id, $payment);
             default:
                 return response()->json(['message' => 'Payment gateway not supported'], 400);
         }
@@ -158,6 +162,70 @@ class PaymentsController extends Controller
     }
 
     public function renderCulquiPaymentView($account_id, $payment)
+    {
+        $publicKeyKey = $account_id . '_CQ_PUBLIC_KEY';
+        $publicKey = env($publicKeyKey);
+
+        $amount = $payment->amount * 100;
+
+        return Inertia::render('Pay/Culqi2', [
+            'publicKey' => $publicKey,
+            'payment' => $payment,
+            'amount' => $amount,
+        ]);
+    }
+
+    public function renderRebillPaymentView($account_id, $payment)
+    {
+        $organization_id_env = $account_id . '_RB_ORGANIZATION_ID';
+        $api_key_env = $account_id . '_RB_API_KEY';
+        
+        $organization_id = env($organization_id_env);
+        $api_key = env($api_key_env);
+
+        $amount = $payment->amount;
+
+        $customer = [
+            'firstName' => "John",
+            'lastName' => "Doe",
+            'email' => 'john@doe.com',
+            'phone' => [
+                'countryCode' => "54",
+                'areaCode' => "11",
+                'phoneNumber' => "1122530654"
+            ],
+            'birthday' => "13-01-1989",
+            'taxId' => [
+                'type' => "CUIT",
+                'value' => "20940000019"
+            ],
+            'personalId' => [
+                'type' => "DNI",
+                'value' => "94000001"
+            ],
+            'address' => [
+                'street' => "Riverside St.",
+                'number' => "102",
+                'floor' => "2",
+                'apt' => "B",
+                'city' => "New York City",
+                'state' => "FL",
+                'zipCode' => "90210",
+                'country' => "USA",
+                'description' => "Home / Office"
+            ]
+        ];
+        
+        return Inertia::render('Pay/Rebill', [
+            'organization_id' => $organization_id,
+            'api_key' => $api_key,
+            'amount' => $amount,
+            'customer' => $customer,
+            'payment' => $payment
+        ]);
+    }
+
+    public function renderPayUPaymentView($account_id, $payment)
     {
         $publicKeyKey = $account_id . '_CQ_PUBLIC_KEY';
         $publicKey = env($publicKeyKey);

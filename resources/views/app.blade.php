@@ -23,6 +23,10 @@
     </head>
     <body class="font-sans antialiased">
 
+    <!-- REBILL -->
+    <script src="https://sdk.rebill.to/v2/rebill.min.js"></script>
+
+
     <script type="text/javascript" src="https://js.openpay.pe/openpay.v1.min.js"></script>
     <script type='text/javascript' src="https://js.openpay.pe/openpay-data.v1.min.js"></script>
 
@@ -35,8 +39,8 @@
 
 
         <?php
-$orderId = request()->route('reference_code');
-?>
+        $orderId = request()->route('reference_code');
+        ?>
 
         <input type="hidden" id="orderId" value="<?php echo $orderId; ?>">
 
