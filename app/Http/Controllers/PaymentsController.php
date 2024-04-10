@@ -177,7 +177,8 @@ class PaymentsController extends Controller
             'amount' => $payment->amount,
             'currency' => $payment->currency,
             'country' => 'PE',
-            'notification_url' => $success
+            'notification_url' => $success,
+            'order_id' => $payment->reference_code,
         ];
 
         curl_setopt_array(
