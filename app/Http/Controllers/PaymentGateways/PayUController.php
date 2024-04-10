@@ -13,14 +13,12 @@ class PayUController extends Controller
     public function store(Request $request)
     {
 
-        Log::info($request);
+        if ($request->state_pol == 4) {
+            Log::info($request->reference_sale);
+            $paymentsController = new PaymentsController();
 
-        // if ($decoded->status == "PAID") {
-        //     Log::info($decoded->order_id);
-        //     $paymentsController = new PaymentsController();
-
-        //     $paymentsController->markAsPaid($decoded->order_id);
-        // }
+            $paymentsController->markAsPaid($request->reference_sale);
+        }
 
     }
 }

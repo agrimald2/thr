@@ -229,7 +229,7 @@ class PaymentsController extends Controller
         $merchantId = env($envMerchantId);
         $accountId = env($envAccountId);
 
-        $signature = $apiKey . "~" . $merchantId . "~" . $payment->reference_code . "~" . $payment->amount . "~" . $payment->currency;
+        $signature = $apiKey . "~" . $merchantId . "~" . $payment->id . "~" . $payment->amount . "~" . $payment->currency;
         $hashSignature = md5($signature);
 
         Log::info("MERCHANT");
