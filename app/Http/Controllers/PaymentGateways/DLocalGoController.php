@@ -13,6 +13,7 @@ class DLocalGoController extends Controller
     public function store(Request $request)
     {
 
+        Log::info("Retornó");
         Log::info($request);
 
         // $paymentsController = new PaymentsController();
