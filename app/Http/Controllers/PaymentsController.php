@@ -244,6 +244,7 @@ class PaymentsController extends Controller
             'publicKey' => $publicKey,
             'apiKey' => $apiKey,
             'accountId' => $accountId,
+            'merchantId' => $merchantId,
             'signature' => $hashSignature,
             'payment' => $payment,
         ]);

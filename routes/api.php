@@ -25,5 +25,8 @@ Route::post('/pay/openpay', [OpenPayController::class, 'store']);
 //DLocalGO
 Route::post('/pay/dlgo', [DLocalGoController::class, 'store']);
 
+//PayU Latam
+Route::post('/pay/payu', [DLocalGoController::class, 'store']);
+
 
 
