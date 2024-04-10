@@ -169,7 +169,7 @@ class PaymentsController extends Controller
         $success = env($envSuccess);
 
         Log::info("MERCHANT");
-        Log::info($secretKey);
+        Log::info($payment);
 
         $curl = curl_init();
 
