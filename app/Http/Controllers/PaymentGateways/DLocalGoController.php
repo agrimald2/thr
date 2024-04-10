@@ -54,7 +54,7 @@ class DLocalGoController extends Controller
             Log::info($decoded->order_id);
             $paymentsController = new PaymentsController();
 
-            $paymentsController->markAsPaid($request->order_id);
+            $paymentsController->markAsPaid($decoded->order_id);
         }
 
 
