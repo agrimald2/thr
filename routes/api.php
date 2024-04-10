@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PaymentGateways\OpenPayController;
+use App\Http\Controllers\PaymentGateways\DLocalGoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,8 @@ Route::post('/payments', [PaymentsController::class, 'store']);
 
 Route::post('/pay/openpay', [OpenPayController::class, 'store']);
 
-Route::post('/pay/dlgo', [OpenPayController::class, 'store']);
+//DLocalGO
+Route::post('/pay/dlgo', [DLocalGoController::class, 'store']);
 
 
 
