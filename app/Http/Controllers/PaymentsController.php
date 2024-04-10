@@ -168,9 +168,6 @@ class PaymentsController extends Controller
         $secretKey = env($envSecretKey);
         $success = env($envSuccess);
 
-        Log::info("MERCHANT");
-        Log::info($payment);
-
         $curl = curl_init();
 
         $data = [
@@ -178,7 +175,7 @@ class PaymentsController extends Controller
             'currency' => $payment->currency,
             'country' => 'PE',
             'notification_url' => $success,
-            'order_id' => $payment->reference_code,
+            'order_id' => $payment->id,
         ];
 
         curl_setopt_array(
