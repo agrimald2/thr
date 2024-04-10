@@ -13,8 +13,8 @@ class DLocalGoController extends Controller
     public function store(Request $request)
     {
 
-        $envApiKey = '1_DLGO_API_KEY';
-        $envSecretKey = '1_DLGO_SECRET_KEY';
+        $envApiKey = '2_DLGO_API_KEY';
+        $envSecretKey = '2_DLGO_SECRET_KEY';
 
         $apiKey = env($envApiKey);
         $secretKey = env($envSecretKey);
