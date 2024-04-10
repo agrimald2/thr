@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PaymentsController;
 use App\Http\Controllers\PaymentGateways\OpenPayController;
 use App\Http\Controllers\PaymentGateways\DLocalGoController;
+use App\Http\Controllers\PaymentGateways\PayUController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ Route::post('/pay/openpay', [OpenPayController::class, 'store']);
 Route::post('/pay/dlgo', [DLocalGoController::class, 'store']);
 
 //PayU Latam
-Route::post('/pay/payu', [DLocalGoController::class, 'store']);
+Route::post('/pay/payu', [PayUController::class, 'store']);
 
 
 
