@@ -17,7 +17,7 @@ class PayUController extends Controller
             Log::info($request->reference_sale);
             $paymentsController = new PaymentsController();
 
-            $paymentsController->markAsPaid($request->reference_sale);
+            $paymentsController->setAsPaid($request->reference_sale);
         }
 
     }

@@ -16,7 +16,7 @@
                     <input name="merchantId" type="hidden" :value="merchantId">
                     <input name="accountId" type="hidden" :value="accountId">
                     <input name="description" type="hidden" :value="payment.description">
-                    <input name="referenceCode" type="hidden" :value="payment.id">
+                    <input name="referenceCode" type="hidden" :value="payment.reference_code">
                     <input name="amount" type="hidden" :value="payment.amount">
                     <input name="currency" type="hidden" :value="payment.currency">
                     <input name="signature" type="hidden" :value="signature">
