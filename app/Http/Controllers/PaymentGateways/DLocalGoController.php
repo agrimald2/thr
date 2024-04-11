@@ -61,4 +61,18 @@ class DLocalGoController extends Controller
 
 
     }
+
+    public function confirm(Request $request)
+    {
+        Log::info($request);
+        // if ($request->transactionState == 4) {
+        //     Log::info($request->referenceCode);
+        //     $paymentsController = new PaymentsController();
+
+        //     $paymentsController->setAsPaid($request->referenceCode);
+
+        //     return Redirect::to(url("/payment_link/{$request->referenceCode}"));
+        // }
+
+    }
 }

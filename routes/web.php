@@ -4,6 +4,7 @@ use App\Http\Controllers\PaymentsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\PaymentGateways\DLocalGoController;
 use App\Http\Controllers\PaymentGateways\PayUController;
 
 /*
@@ -43,4 +44,7 @@ Route::get('/payment_link/{reference_code}', [PaymentsController::class, 'paymen
 Route::post('/process-payment-culqi', [PaymentsController::class, 'processPaymentCulqi']);
 //Pay U Latam
 Route::get('/pay/payu', [PayUController::class, 'confirm']);
+
+//DLocal Go
+Route::get('/pay/dlgo', [DLocalGoController::class, 'confirm']);
 

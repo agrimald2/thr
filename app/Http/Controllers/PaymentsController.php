@@ -167,6 +167,7 @@ class PaymentsController extends Controller
         $apiKey = env($envApiKey);
         $secretKey = env($envSecretKey);
         $success = env($envSuccess);
+        $successURL = url("/pay/dlgo");
 
         $curl = curl_init();
 
@@ -176,7 +177,7 @@ class PaymentsController extends Controller
             'country' => 'PE',
             'notification_url' => $success,
             'order_id' => $payment->reference_code,
-            'success_url' => url("/payment_link/{$payment->reference_code}")
+            'success_url' => $successURL
         ];
 
         curl_setopt_array(
