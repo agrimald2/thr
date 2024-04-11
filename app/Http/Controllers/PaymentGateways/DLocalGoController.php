@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PaymentGateways;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\PaymentsController;
 use Log;
 
@@ -65,14 +66,14 @@ class DLocalGoController extends Controller
     public function confirm(Request $request)
     {
         Log::info($request);
-        // if ($request->transactionState == 4) {
-        //     Log::info($request->referenceCode);
-        //     $paymentsController = new PaymentsController();
+        if ($request->status == "PAID") {
+            Log::info($request->order_id);
+            $paymentsController = new PaymentsController();
 
-        //     $paymentsController->setAsPaid($request->referenceCode);
+            $paymentsController->setAsPaid($request->order_id);
 
-        //     return Redirect::to(url("/payment_link/{$request->referenceCode}"));
-        // }
+            return Redirect::to(url("/payment_link/{$request->order_id}"));
+        }
 
     }
 }
