@@ -57,7 +57,6 @@ class DLocalGoController extends Controller
     {
         Log::info($request);
         if ($request->status == "PAID") {
-            Log::info($request->order_id);
             $paymentsController = new PaymentsController();
 
             $paymentsController->setAsPaid($request->order_id);
@@ -65,5 +64,12 @@ class DLocalGoController extends Controller
             return Redirect::to(url("/payment_link/{$request->order_id}"));
         }
 
+        if ($request->status == "PENDING") {
+            $paymentsController = new PaymentsController();
+
+            $paymentsController->setAsPaid($request->order_id);
+
+            return Redirect::to(url("/payment_link/{$request->order_id}"));
+        }
     }
 }
