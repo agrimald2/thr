@@ -46,5 +46,5 @@ Route::post('/process-payment-culqi', [PaymentsController::class, 'processPaymen
 Route::get('/pay/payu', [PayUController::class, 'confirm']);
 
 //DLocal Go
-Route::post('/pay/dlgo', [DLocalGoController::class, 'confirm']);
+Route::match(['get', 'post'],'/pay/dlgo', [DLocalGoController::class, 'confirm']);
 
