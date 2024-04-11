@@ -176,6 +176,7 @@ class PaymentsController extends Controller
             'country' => 'PE',
             'notification_url' => $success,
             'order_id' => $payment->reference_code,
+            'success_url' => url("/payment_link/{$payment->reference_code}")
         ];
 
         curl_setopt_array(
@@ -232,6 +233,9 @@ class PaymentsController extends Controller
         $signature = $apiKey . "~" . $merchantId . "~" . $payment->reference_code . "~" . $payment->amount . "~" . $payment->currency;
         $hashSignature = md5($signature);
 
+        $confirmURL = url("/api/pay/payu");
+        $successURL = url("/pay/payu");
+
         Log::info("MERCHANT");
         Log::info($signature);
 
@@ -247,6 +251,8 @@ class PaymentsController extends Controller
             'merchantId' => $merchantId,
             'signature' => $hashSignature,
             'payment' => $payment,
+            'confirmURL' => $confirmURL,
+            'successURL' => $successURL
         ]);
     }
 

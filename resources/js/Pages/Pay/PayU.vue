@@ -21,7 +21,8 @@
                     <input name="currency" type="hidden" :value="payment.currency">
                     <input name="signature" type="hidden" :value="signature">
                     <input name="test" type="hidden" value="1">
-                    <input name="confirmationUrl" type="hidden" value="https://thr.insource.pe/api/pay/payu">
+                    <input name="responseUrl" type="hidden" :value="confirmURL">
+                    <input name="confirmationUrl" type="hidden" :value="successURL">
 
                     <footer class="mt-2 p-4">
                         <div class="flex justify-center center mb-2" v-if="loader">
@@ -45,7 +46,7 @@ import ErrorModal from './Error.vue';
 import Loader from './Loader.vue';
 
 export default {
-    props: ['loginKey', 'publicKey', 'apiKey', 'accountId', 'merchantId', 'signature', 'payment'],
+    props: ['loginKey', 'publicKey', 'apiKey', 'accountId', 'merchantId', 'signature', 'payment', 'confirmURL', 'successURL'],
     components: {
         ErrorModal,
         Loader
