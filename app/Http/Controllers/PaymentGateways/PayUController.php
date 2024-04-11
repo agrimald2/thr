@@ -25,7 +25,7 @@ class PayUController extends Controller
     public function confirm(Request $request)
     {
         Log::info($request);
-        if ($request->state_pol == 4) {
+        if ($request->transactionState == 4) {
             Log::info($request->reference_sale);
             $paymentsController = new PaymentsController();
 
