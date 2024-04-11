@@ -26,12 +26,12 @@ class PayUController extends Controller
     {
         Log::info($request);
         if ($request->transactionState == 4) {
-            Log::info($request->reference_sale);
+            Log::info($request->referenceCode);
             $paymentsController = new PaymentsController();
 
-            $paymentsController->setAsPaid($request->reference_sale);
+            $paymentsController->setAsPaid($request->referenceCode);
 
-            return Redirect::to(url("/payment_link/{$request->reference_sale}"));
+            return Redirect::to(url("/payment_link/{$request->referenceCode}"));
         }
 
     }
