@@ -177,7 +177,7 @@ class PaymentsController extends Controller
             'country' => 'PE',
             'notification_url' => $success,
             'order_id' => $payment->reference_code,
-            'back_url' => $successURL
+            'success_url' => $successURL
         ];
 
         curl_setopt_array(
