@@ -42,5 +42,5 @@ Route::middleware([
 Route::get('/payment_link/{reference_code}', [PaymentsController::class, 'paymentLink']);
 Route::post('/process-payment-culqi', [PaymentsController::class, 'processPaymentCulqi']);
 //Pay U Latam
-Route::post('/pay/payu', [PayUController::class, 'confirm']);
+Route::get('/pay/payu', [PayUController::class, 'confirm']);
 
