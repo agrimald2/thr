@@ -20,8 +20,6 @@ class DLocalGoController extends Controller
         $apiKey = env($envApiKey);
         $secretKey = env($envSecretKey);
 
-        Log::info($request);
-
         $curl = curl_init();
 
         curl_setopt_array(
@@ -44,15 +42,11 @@ class DLocalGoController extends Controller
         $response = curl_exec($curl);
         $err = curl_error($curl);
 
-        Log::info($response);
-        Log::info($err);
-
         curl_close($curl);
 
         $decoded = json_decode($response);
 
         if ($decoded->status == "PAID") {
-            Log::info($decoded->order_id);
             $paymentsController = new PaymentsController();
 
             $paymentsController->setAsPaid($decoded->order_id);
