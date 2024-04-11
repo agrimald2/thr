@@ -57,10 +57,6 @@ class DLocalGoController extends Controller
 
             $paymentsController->setAsPaid($decoded->order_id);
         }
-
-
-
-
     }
 
     public function confirm(Request $request)
