@@ -168,10 +168,10 @@ export default {
             card: 'front',
             openpay: {
                 token: '',
-                endpoint_sandbox_openpay: import.meta.env.VITE_OP_SANDBOX_ENDPOINT,
+                endpoint_sandbox_openpay: 'https://api.openpay.pe',
                 endpoint_payment: "/api/pay/openpay",
                 deviceSessionId: '',
-                openpay_sandbox_mode: import.meta.env.VITE_OP_SANDBOX_MODE,
+                openpay_sandbox_mode: false,
                 openpay_id: this.merchantId,
                 openpay_key: this.publicKey,
             }
