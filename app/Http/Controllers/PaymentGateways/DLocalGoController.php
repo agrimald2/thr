@@ -48,7 +48,6 @@ class DLocalGoController extends Controller
 
         if ($decoded->status == "PAID") {
             $paymentsController = new PaymentsController();
-
             $paymentsController->setAsPaid($decoded->order_id);
         }
     }
