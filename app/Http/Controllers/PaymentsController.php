@@ -178,6 +178,10 @@ class PaymentsController extends Controller
             $url = 'https://api.dlocalgo.com/v1/payments';
         }
 
+
+        Log::info(env($account_id . '_DLGO_PRODUCTION_MODE'));
+        Log::info($url);
+
         $data = [
             'amount' => $payment->amount,
             'currency' => $payment->currency,
