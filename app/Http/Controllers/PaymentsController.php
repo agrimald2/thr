@@ -160,7 +160,8 @@ class PaymentsController extends Controller
     }
 
     public function renderDLocalGOPaymentView($account_id, $payment)
-    {
+    {   
+        $production_mode = env($account_id . '_DLGO_PRODUCTION_MODE');
         $envApiKey = $account_id . '_DLGO_API_KEY';
         $envSecretKey = $account_id . '_DLGO_SECRET_KEY';
         $envSuccess = $account_id . '_DLGO_SUCCESS_URL';
@@ -170,6 +171,12 @@ class PaymentsController extends Controller
         $success = env($envSuccess);
 
         $curl = curl_init();
+
+        $url = 'https://api-sbx.dlocalgo.com/v1/payments';
+
+        if($production_mode){
+            $url = 'https://api.dlocalgo.com/v1/payments';
+        }
 
         $data = [
             'amount' => $payment->amount,
@@ -183,7 +190,7 @@ class PaymentsController extends Controller
         curl_setopt_array(
             $curl,
             array(
-                CURLOPT_URL => "https://api-sbx.dlocalgo.com/v1/payments",
+                CURLOPT_URL => $url,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
