@@ -13,7 +13,7 @@ class DLocalGoController extends Controller
 {
     public function store(Request $request)
     {
-
+        $production_mode = env($account_id . '_DLGO_PRODUCTION_MODE');
         $envApiKey = '2_DLGO_API_KEY';
         $envSecretKey = '2_DLGO_SECRET_KEY';
 
@@ -22,10 +22,16 @@ class DLocalGoController extends Controller
 
         $curl = curl_init();
 
+        $url = 'https://api-sbx.dlocalgo.com/v1/payments';
+
+        if($production_mode){
+            $url = 'https://api.dlocalgo.com/v1/payments';
+        }
+
         curl_setopt_array(
             $curl,
             array(
-                CURLOPT_URL => "https://api-sbx.dlocalgo.com/v1/payments/" . $request->payment_id,
+                CURLOPT_URL => $url . $request->payment_id,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
