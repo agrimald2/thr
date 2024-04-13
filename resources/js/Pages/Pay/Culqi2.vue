@@ -7,8 +7,8 @@
 <script>
 export default {
     props: ["publicKey", "payment", 'amount'],
-    data(){
-        return{
+    data() {
+        return {
             amount: this.amount,
             currency: this.payment.currency,
             description: this.payment.description,
@@ -21,16 +21,16 @@ export default {
         script.onload = this.initCulqi;
         document.body.appendChild(script);
 
-        setTimeout(function(){
+        setTimeout(function () {
             Culqi.open();
         }, 3000);
-        
+
     },
     methods: {
         initCulqi() {
             Culqi.publicKey = this.publicKey;
             Culqi.settings({
-                title: "Nombre de tu tienda",
+                title: "THR",
                 currency: this.currency,
                 amount: this.amount,
                 order: "ord_live_0CjjdWhFpEAZlxlz",
@@ -45,7 +45,6 @@ export default {
             if (e.detail.object === "token") {
                 const token = e.detail.token_id;
                 console.log("Se ha creado un token:", token);
-                // Aquí puedes enviar el token a tu backend para realizar el cargo
             } else if (e.detail.object === "order") {
                 const order = e.detail.order;
                 console.log("Se ha creado un objeto Order:", order);
