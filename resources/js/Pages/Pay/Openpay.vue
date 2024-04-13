@@ -125,6 +125,11 @@
                         Pay now
                     </button>
                 </footer>
+
+                <div class="mt-2 flex justify-center">
+                    <img src="https://www.ecommercenews.pe/wp-content/uploads/2021/10/Openpay-1.jpg" alt=""
+                        style="width: 30%">
+                </div>
             </div>
         </div>
         <ErrorModal v-if="haveError" :errorText="errorText" @close="handleCloseModal" />
@@ -241,7 +246,12 @@ export default {
                     });
 
                     this.loader = false;
-                    window.location.reload();
+                    console.log(paymentResponse);
+                    if (paymentResponse.data.error) {
+                        this.showError(paymentResponse.data.error.description)
+                    } else {
+                        window.location.reload();
+                    }
                 }
             } catch (error) {
                 this.loader = false;
