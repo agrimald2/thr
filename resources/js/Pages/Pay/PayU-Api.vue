@@ -93,7 +93,7 @@ export default {
                 endpoint: "https://api.payulatam.com",
                 endpoint_payment: "/payments-api/4.0/service.cgi",
                 deviceSessionId: '',
-                sandbox_mode: true,
+                sandbox_mode: false,
                 loginKey: this.loginKey,
                 publicKey: this.publicKey,
                 apiKey: this.apiKey,
