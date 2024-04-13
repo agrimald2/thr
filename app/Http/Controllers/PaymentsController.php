@@ -168,6 +168,7 @@ class PaymentsController extends Controller
 
         $curl = curl_init();
 
+        //Fix de url
         $data = [
             'amount' => $payment->amount,
             'currency' => $payment->currency,
