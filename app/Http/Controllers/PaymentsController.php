@@ -162,11 +162,9 @@ class PaymentsController extends Controller
     {
         $envApiKey = $account_id . '_DLGO_API_KEY';
         $envSecretKey = $account_id . '_DLGO_SECRET_KEY';
-        $envSuccess = $account_id . '_DLGO_SUCCESS_URL';
 
         $apiKey = env($envApiKey);
         $secretKey = env($envSecretKey);
-        $success = env($envSuccess);
 
         $curl = curl_init();
 
@@ -174,7 +172,7 @@ class PaymentsController extends Controller
             'amount' => $payment->amount,
             'currency' => $payment->currency,
             'country' => 'PE',
-            'notification_url' => $success,
+            'notification_url' => url("/api/pay/dlgo"),
             'order_id' => $payment->reference_code,
             'success_url' => url("/payment_link/{$payment->reference_code}")
         ];
