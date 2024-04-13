@@ -130,6 +130,7 @@ class PaymentsController extends Controller
         $publicKey = env($publicKeyKey);
 
         Log::info("MERCHANT");
+        Log::info($merchantIdKey);
         Log::info($merchantId);
         Log::info($publicKey);
 
