@@ -1,5 +1,5 @@
 <template>
-    <form method="post" action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/">
+    <form method="post" action="https://checkout.payulatam.com/ppp-web-gateway-payu/">
         <div class="flex items-center justify-center min-h-screen bg-gray-100">
             <div class="p-6 text-center bg-white shadow-lg rounded-lg">
                 <div class="max-w-md mx-auto shadow-lg rounded-xl bg-white p-6">
@@ -73,7 +73,7 @@ export default {
                 endpoint: "https://api.payulatam.com",
                 endpoint_payment: "/payments-api/4.0/service.cgi",
                 deviceSessionId: '',
-                sandbox_mode: true,
+                sandbox_mode: false,
                 loginKey: this.loginKey,
                 publicKey: this.publicKey,
                 apiKey: this.apiKey,
