@@ -431,6 +431,8 @@ class PaymentsController extends Controller
 
         if($account->payment_gateway == 'OP'){
             $validatedData['currency'] = 'USD';
+        }else{
+            $validatedData['currency'] = 'PEN';
         }
 
         // Calculate the amount in the specified currency if it is not USD
