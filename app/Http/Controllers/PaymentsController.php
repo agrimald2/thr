@@ -420,6 +420,7 @@ class PaymentsController extends Controller
 
         // Get a random account if account_id is not provided
         if (!$request->filled('account_id')) {
+            Log::info('GENERAR RANDOM');
             $account = $this->getRandomAccount();
             $validatedData['account_id'] = $account->id;
             $validatedData['payment_gateway'] = $account->payment_gateway;
