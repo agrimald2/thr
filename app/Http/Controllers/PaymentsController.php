@@ -370,8 +370,6 @@ class PaymentsController extends Controller
                     'source_id' => $request->input('token'),
                 )
             );
-
-            Log::info($charge);
             
             if ($charge->outcome->type === 'venta_exitosa') {
                 $this->markAsPaid($payment->id);
