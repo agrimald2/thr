@@ -366,7 +366,7 @@ class PaymentsController extends Controller
                     'amount' => $amount,
                     'currency_code' => $payment->currency,
                     'description' => 'Pago Demo 3',
-                    'email' => 'agrimaldop8e-pask.com',
+                    'email' => 'agrimaldop@e-pask.com',
                     'source_id' => $request->input('token'),
                 )
             );
