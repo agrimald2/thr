@@ -403,4 +403,55 @@ class PaymentsController extends Controller
     }
 
 
+    public function createPaymentLink(Request $request)
+    {
+        Log::info($request);
+
+        $validatedData = $request->validate([
+            'amount_usd' => 'required|numeric',
+            'currency' => 'required|string',
+            'description' => 'nullable|string',
+            'billed' => 'sometimes|boolean',
+            'redirect_link' => 'nullable|url',
+            'created_by' => 'nullable|string',
+        ]);
+
+        $account = null;
+
+        // Get a random account if account_id is not provided
+        if (!$request->filled('account_id')) {
+            $account = $this->getRandomAccount();
+            $validatedData['account_id'] = $account->id;
+            $validatedData['payment_gateway'] = $account->payment_gateway;
+        } else {
+            $validatedData['account_id'] = $request->input('account_id');
+            $account = Account::find($validatedData['account_id']);
+            $validatedData['payment_gateway'] = $account->payment_gateway;
+        }
+
+        if($account->payment_gateway == 'OP'){
+            $validatedData['currency'] = 'USD';
+        }
+
+        // Calculate the amount in the specified currency if it is not USD
+        $currency = Currency::where('abbreviation', $validatedData['currency'])->first();
+        if ($currency && $validatedData['currency'] !== 'USD') {
+            $validatedData['amount'] = $validatedData['amount_usd'] * $currency->tc;
+        } else {
+            $validatedData['amount'] = $validatedData['amount_usd'];
+        }
+
+        // Remove payment_date from the validated data as it should not be stored
+        unset($validatedData['payment_date']);
+
+        $payment = new Payment($validatedData);
+        $payment->save();
+
+        // Include id in the reference code and update the payment
+        $payment->reference_code = $request->input('reference_code', $this->getReferenceCode($payment->id));
+        $payment->save();
+
+        return response()->json(['payment_link' => $payment]);
+    } 
+
 }

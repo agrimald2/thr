@@ -30,4 +30,9 @@ Route::post('/pay/dlgo', [DLocalGoController::class, 'store']);
 Route::post('/pay/payu', [PayUController::class, 'store']);
 
 
+Route::get('/getPaymentLink', [PaymentsController::class, 'createPaymentLink']);
+
+
+
+
 
