@@ -360,7 +360,6 @@ class PaymentsController extends Controller
                 'api_key' => $privateKey,
             ]);
 
-
             $charge = $culqi->Charges->create(
                 array(
                     'amount' => $amount,
@@ -371,6 +370,8 @@ class PaymentsController extends Controller
                 )
             );
 
+            Log::info($charge);
+            
             if ($charge->outcome->type === 'venta_exitosa') {
                 $this->markAsPaid($payment->id);
                 return response()->json(['success' => true, 'message' => 'Pago exitoso']);
