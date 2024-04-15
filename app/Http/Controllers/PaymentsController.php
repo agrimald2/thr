@@ -347,6 +347,7 @@ class PaymentsController extends Controller
     public function processPaymentCulqi(Request $request)
     {
 
+        Log::warning($request);
         $payment = Payment::where('reference_code', $request->orderId)->first();
         $amount = $payment->amount * 100;
 
@@ -364,8 +365,8 @@ class PaymentsController extends Controller
                 array(
                     'amount' => $amount,
                     'currency_code' => $payment->currency,
-                    'description' => 'Pago demo',
-                    'email' => 'usuario@example.com',
+                    'description' => 'Pago Demo 2',
+                    'email' => 'agrimaldopci18@example.com',
                     'source_id' => $request->input('token'),
                 )
             );
