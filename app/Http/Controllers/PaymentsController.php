@@ -371,13 +371,13 @@ class PaymentsController extends Controller
                 )
             );
             
-            if ($charge->outcome->type === 'venta_exitosa') {
+            //if ($charge->outcome->type === 'venta_exitosa') {
                 $this->markAsPaid($payment->id);
                 return response()->json(['success' => true, 'message' => 'Pago exitoso']);
-            } else {
-                // El pago no fue exitoso, puedes manejar esta situación según tus necesidades
-                return response()->json(['success' => false, 'message' => 'El pago no fue exitoso']);
-            }
+            //} else {
+            //    // El pago no fue exitoso, puedes manejar esta situación según tus necesidades
+            //    return response()->json(['success' => false, 'message' => 'El pago no fue exitoso']);
+            //}
         } catch (\Culqi\Exception\InapplicableObject $e) {
             // Hubo un error al procesar el pago
             return response()->json(['error' => $e->getMessage()], 400);
