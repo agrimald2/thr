@@ -365,19 +365,19 @@ class PaymentsController extends Controller
                 array(
                     'amount' => $amount,
                     'currency_code' => $payment->currency,
-                    'description' => 'Pago Demo 3',
-                    'email' => 'agrimaldop@e-pask.com',
+                    'description' => 'Pago Demo 4',
+                    'email' => 'agrimaldop@ci.edu.pe',
                     'source_id' => $request->input('token'),
                 )
             );
-            
-            //if ($charge->outcome->type === 'venta_exitosa') {
+
+            if ($charge->outcome->type === 'venta_exitosa') {
                 $this->markAsPaid($payment->id);
                 return response()->json(['success' => true, 'message' => 'Pago exitoso']);
-            //} else {
-            //    // El pago no fue exitoso, puedes manejar esta situación según tus necesidades
-            //    return response()->json(['success' => false, 'message' => 'El pago no fue exitoso']);
-            //}
+            } else {
+                // El pago no fue exitoso, puedes manejar esta situación según tus necesidades
+                return response()->json(['success' => false, 'message' => 'El pago no fue exitoso']);
+            }
         } catch (\Culqi\Exception\InapplicableObject $e) {
             // Hubo un error al procesar el pago
             return response()->json(['error' => $e->getMessage()], 400);
