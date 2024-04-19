@@ -50,7 +50,6 @@ export default {
     },
     mounted() {
         console.log(this.response);
-        console.log("All good");
     },
     computed: {
         isValid() {

@@ -34,7 +34,6 @@ class PaymentsController extends Controller
 
     public function store(Request $request)
     {
-        Log::info($request);
 
         $validatedData = $request->validate([
             'amount_usd' => 'required|numeric',
@@ -126,14 +125,16 @@ class PaymentsController extends Controller
     {
         $merchantIdKey = $account_id . '_OP_MERCHANT_ID';
         $publicKeyKey = $account_id . '_OP_PUBLIC_KEY';
-
+        
         $merchantId = env($merchantIdKey);
         $publicKey = env($publicKeyKey);
+        $isProduction = env('VITE_OP_PRODUCTION_MODE');
+        $endpoint = 'https://sandbox-api.openpay.pe';
+        
+        if($isProduction){
+            $endpoint = 'https://api.openpay.pe';
+        }
 
-        Log::info("MERCHANT");
-        Log::info($merchantIdKey);
-        Log::info($merchantId);
-        Log::info($publicKey);
 
         if (!$merchantId || !$publicKey) {
             return response()->json(['message' => 'OpenPay credentials not found'], 500);
@@ -143,6 +144,8 @@ class PaymentsController extends Controller
             'merchantId' => $merchantId,
             'publicKey' => $publicKey,
             'payment' => $payment,
+            'isProduction' => $isProduction,
+            'endpoint' => $endpoint
         ]);
     }
 
@@ -177,8 +180,6 @@ class PaymentsController extends Controller
             $url = 'https://api.dlocalgo.com/v1/payments';
         }
 
-
-        Log::info(env($account_id . '_DLGO_PRODUCTION_MODE'));
         Log::info($url);
 
         $data = [
@@ -187,7 +188,7 @@ class PaymentsController extends Controller
             'country' => 'PE',
             'notification_url' => url("/api/pay/dlgo"),
             'order_id' => $payment->reference_code,
-            'success_url' => url("/payment_link/{$payment->reference_code}")
+            'success_url' => url("/mark/payments/pay/link/{$payment->reference_code}")
         ];
 
         curl_setopt_array(
@@ -404,6 +405,17 @@ class PaymentsController extends Controller
         ]);
     }
 
+    public function markAsPaidUrl($reference_code)
+    {
+        $payment = Payment::where('reference_code', $reference_code)->firstOrFail();
+        $payment->update([
+            'payment_date' => now(),
+            'status' => 'paid',
+        ]);
+
+        return redirect("/payment_link/{$reference_code}");
+    }
+
     public function setAsPaid($payment_id)
     {
         $payment = Payment::where('reference_code', '=', $payment_id)->firstOrFail();
@@ -441,7 +453,7 @@ class PaymentsController extends Controller
             $validatedData['payment_gateway'] = $account->payment_gateway;
         }
 
-        if($account->payment_gateway == 'OP' || $account->payment_gateway == 'CQ'){
+        if($account->payment_gateway == 'OP' || $account->payment_gateway == 'CQ' || $account->payment_gateway == 'DLGO'){
             $validatedData['currency'] = 'USD';
         }else{
             $validatedData['currency'] = 'PEN';

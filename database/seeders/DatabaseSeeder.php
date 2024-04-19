@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => '12345689', // Password is not hashed as per the instructions
             'phone' => '934094501',
-            'payment_gateway' => 'DLGO',
+            'payment_gateway' => 'OP',
         ]);
 
         \App\Models\Account::create([

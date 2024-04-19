@@ -48,3 +48,5 @@ Route::get('/pay/payu', [PayUController::class, 'confirm']);
 //DLocal Go
 Route::match(['get', 'post'],'/pay/dlgo', [DLocalGoController::class, 'confirm']);
 
+//Pay Route
+Route::get('/mark/payments/pay/link/{reference_code}', [PaymentsController::class, 'markAsPaidUrl']);

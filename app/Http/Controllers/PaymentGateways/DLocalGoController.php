@@ -13,6 +13,8 @@ class DLocalGoController extends Controller
 {
     public function store(Request $request)
     {
+        Log::info("HOLA");
+        
         $production_mode = env($account_id . '_DLGO_PRODUCTION_MODE');
         $envApiKey = '2_DLGO_API_KEY';
         $envSecretKey = '2_DLGO_SECRET_KEY';
@@ -51,6 +53,8 @@ class DLocalGoController extends Controller
         curl_close($curl);
 
         $decoded = json_decode($response);
+
+        Log::debug($decoded);
 
         if ($decoded->status == "PAID") {
             $paymentsController = new PaymentsController();
