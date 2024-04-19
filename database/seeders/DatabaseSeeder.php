@@ -23,18 +23,43 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\Account::create([
-            'legal_representative' => 'TESTER',
+            'legal_representative' => 'OpenPay | 1',
             'email' => 'test@test.com',
             'password' => '12345689', // Password is not hashed as per the instructions
             'phone' => '934094501',
-            'payment_gateway' => 'OP',
+            'payment_gateway' => 'DLGO',
         ]);
+
+        \App\Models\Account::create([
+            'legal_representative' => 'DLocal GO | 1',
+            'email' => 'test@test.com',
+            'password' => '12345689', // Password is not hashed as per the instructions
+            'phone' => '934094501',
+            'payment_gateway' => 'DLGO',
+        ]);
+
+        \App\Models\Account::create([
+            'legal_representative' => 'Culqui | 1',
+            'email' => 'test@test.com',
+            'password' => '12345689', // Password is not hashed as per the instructions
+            'phone' => '934094501',
+            'payment_gateway' => 'CQ',
+        ]);
+
+        \App\Models\Account::create([
+            'legal_representative' => 'Pay U | 1',
+            'email' => 'test@test.com',
+            'password' => '12345689', // Password is not hashed as per the instructions
+            'phone' => '934094501',
+            'payment_gateway' => 'PY',
+        ]);
+
 
         \App\Models\PaymentGateway::insert([
             ['name' => 'OPENPAY', 'abbreviation' => 'OP'],
             ['name' => 'MERCADOPAGO', 'abbreviation' => 'MP'],
             ['name' => 'CULQUI', 'abbreviation' => 'CQ'],
-            ['name' => 'DLOCALGO', 'abbreviation' => 'DLOCALG'],
+            ['name' => 'DLOCALGO', 'abbreviation' => 'DLGO'],
             ['name' => 'PAYU', 'abbreviation' => 'PY'],
         ]);
     
