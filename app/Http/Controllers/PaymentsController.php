@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Account;
 use App\Models\Currency;
 use App\Models\Payment;
+use App\Models\EmailDump;
 use Culqi\Culqi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -272,11 +273,13 @@ class PaymentsController extends Controller
         $publicKey = env($publicKeyKey);
 
         $amount = $payment->amount * 100;
+        $description = $payment->description;
 
         return Inertia::render('Pay/Culqi2', [
             'publicKey' => $publicKey,
             'payment' => $payment,
             'amount' => $amount,
+            'description' => $description
         ]);
     }
 
@@ -348,35 +351,43 @@ class PaymentsController extends Controller
     {
 
         Log::warning($request);
-        $payment = Payment::where('reference_code', $request->orderId)->first();
+        $payment = Payment::where('reference_code', $request->orderId)->firstOrFail();
         $amount = $payment->amount * 100;
+        $description = $payment->description;
+        if (strlen($description) < 5) {
+            $description = str_pad($description, 5, " ", STR_PAD_RIGHT);
+        } elseif (strlen($description) > 75) {
+            $description = substr($description, 0, 75);
+        }
 
         $privateKey = env($payment->account_id . '_CQ_SECRET_KEY');
+        $randomEmail = EmailDump::inRandomOrder()->first()->email;
 
         try {
             $token = $request->input('token');
 
-            // Configurar las credenciales de Culqi (clave secreta)
-            $culqi = new Culqi([
-                'api_key' => $privateKey,
-            ]);
+            // Initialize Culqi with secret key
+            $culqi = new Culqi(['api_key' => $privateKey]);
 
             $charge = $culqi->Charges->create(
                 array(
                     'amount' => $amount,
                     'currency_code' => $payment->currency,
-                    'description' => 'Pago Demo 4',
-                    'email' => 'agrimaldop@ci.edu.pe',
-                    'source_id' => $request->input('token'),
+                    'description' => $description,
+                    'email' => $randomEmail,
+                    'source_id' => $token,
                 )
             );
+            $chargeData = json_decode(json_encode($charge), true);
 
-            if ($charge->outcome->type === 'venta_exitosa') {
+            if (isset($chargeData['outcome']) && $chargeData['outcome']['type'] === 'venta_exitosa') {
                 $this->markAsPaid($payment->id);
                 return response()->json(['success' => true, 'message' => 'Pago exitoso']);
             } else {
-                // El pago no fue exitoso, puedes manejar esta situación según tus necesidades
-                return response()->json(['success' => false, 'message' => 'El pago no fue exitoso']);
+                $errorMessage = $chargeData['user_message'] ?? 'El pago no fue exitoso';
+                $formattedErrorMessage = "Error de CULQUI para el pago con reference_code {$request->orderId} en la fecha " . now()->toDateTimeString() . ": {$errorMessage}";
+                Log::info($formattedErrorMessage);
+                return response()->json(['success' => false, 'message' => $errorMessage]);
             }
         } catch (\Culqi\Exception\InapplicableObject $e) {
             // Hubo un error al procesar el pago
@@ -430,7 +441,7 @@ class PaymentsController extends Controller
             $validatedData['payment_gateway'] = $account->payment_gateway;
         }
 
-        if($account->payment_gateway == 'OP'){
+        if($account->payment_gateway == 'OP' || $account->payment_gateway == 'CQ'){
             $validatedData['currency'] = 'USD';
         }else{
             $validatedData['currency'] = 'PEN';

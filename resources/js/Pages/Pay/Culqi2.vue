@@ -1,12 +1,12 @@
 <template>
     <div>
-        <button @click="openCulqiModal">Pagar con Culqi</button>
+        <button @click="openCulqiModal">CQ</button>
     </div>
 </template>
 
 <script>
 export default {
-    props: ["publicKey", "payment", 'amount'],
+    props: ["publicKey", "payment", 'amount', 'Error'],
     data() {
         return {
             amount: this.amount,
