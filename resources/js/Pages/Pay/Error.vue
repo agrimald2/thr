@@ -21,10 +21,8 @@
                         </h3>
                         <div class="mt-2">
                             <p class="text-sm text-gray-500">
-                                <!-- 
-                                    {{ errorText }}
-                                -->
-                                No se pudo procesar el pago
+                                No se pudo procesar el pago:
+                                {{ errorText }}
                             </p>
                         </div>
                     </div>

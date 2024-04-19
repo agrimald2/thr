@@ -7,9 +7,8 @@
                     <span class="uppercase">{{ payment.currency }}</span>
                 </div>
                 <p class="text-gray-600 text-sm">
-                    {{ payment.reference_code }} | {{ payment.description }}
+                    {{ payment.description }}
                 </p>
-                <p> {{ publicKey }}</p>
             </div>
             <div class="credit-card w-full sm:w-auto shadow-lg mx-auto rounded-xl bg-white">
                 <header class="flex flex-col justify-center items-center">
@@ -142,7 +141,7 @@ import ErrorModal from './Error.vue';
 import Loader from './Loader.vue';
 
 export default {
-    props: ['merchantId', 'publicKey', 'payment'],
+    props: ['merchantId', 'publicKey', 'payment', 'isProduction', 'endpoint'],
     components: {
         ErrorModal,
         Loader
@@ -168,10 +167,10 @@ export default {
             card: 'front',
             openpay: {
                 token: '',
-                endpoint_sandbox_openpay: 'https://api.openpay.pe',
+                endpoint_sandbox_openpay: this.endpoint,
                 endpoint_payment: "/api/pay/openpay",
                 deviceSessionId: '',
-                openpay_sandbox_mode: false,
+                openpay_sandbox_mode: !this.isProduction,
                 openpay_id: this.merchantId,
                 openpay_key: this.publicKey,
             }
@@ -261,7 +260,7 @@ export default {
         },
         showError(text) {
             this.haveError = true,
-                this.errorText = text;
+            this.errorText = text;
         },
         handleCloseModal() {
             this.haveError = false;
